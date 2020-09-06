@@ -4,12 +4,14 @@ import { Admin, Resource, ListGuesser, fetchUtils } from 'react-admin';
 import jsonServerProvider from 'ra-data-json-server';
 
 import { BrokerList, BrokerEdit, BrokerCreate, BrokerIcon } from './Brokers';
+import { PortfolioList, PortfolioEdit, PortfolioCreate, PortfolioIcon } from './Portfolios';
 import { StockOperationList, StockOperationEdit, StockOperationCreate, StockOperationIcon } from './StockOperations';
 
 const dataProvider = jsonServerProvider('http://localhost:8000');
 const App = () => (
     <Admin dataProvider={dataProvider}>
          <Resource name="brokers" list={BrokerList} edit={BrokerEdit} create={BrokerCreate}/>
+         <Resource name="portfolios" list={PortfolioList} edit={PortfolioEdit} create={PortfolioCreate}/>
          <Resource name="stocks/operations" list={StockOperationList} edit={StockOperationEdit} create={StockOperationCreate}/>
     </Admin>
 );
