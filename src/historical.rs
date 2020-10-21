@@ -172,6 +172,8 @@ async fn do_refresh_for_symbol(symbol: &str) -> WalletResult<()> {
         return Ok(());
     }
 
+    println!("since: {}", since.to_string());
+
     let data = history::retrieve_range(&format!("{}.SA", symbol), since, Some(yesterday)).await;
 
     // HACK: yahoo-finance-rs will fail on queries for days with no data
@@ -180,7 +182,7 @@ async fn do_refresh_for_symbol(symbol: &str) -> WalletResult<()> {
     let data = match data {
         Ok(data) => data,
         Err(e) => {
-            if format!("{:?}", e).contains("BadData {") {
+            if format!("{:?}", e).contains("BadData ") {
                 Vec::<Bar>::new()
             } else {
                 return Err(dang!(Yahoo, format!("{}: {}", symbol, e)));
@@ -208,6 +210,8 @@ async fn do_refresh_for_symbol(symbol: &str) -> WalletResult<()> {
 
         docs.push(doc);
     }
+
+    println!("docs: {}", docs.len());
 
     if docs.is_empty() {
         return Ok(());
@@ -244,6 +248,8 @@ mod tests {
             .expect("Count failed");
         assert!(original_count > 0);
 
+        println!("original-count: {}", original_count);
+
         // Delete the last year.
         let filter = doc! {
             "time": { "$gt": format!("{}-1-1", Utc::today().year() - 1) }
@@ -257,6 +263,8 @@ mod tests {
             .count_documents(None, None)
             .expect("Count failed");
         assert!(count > 0 && count < original_count);
+
+        println!("after-delete: {}", count);
 
         // Refresh again.
         let result = do_refresh_for_symbol("ANIM3");
