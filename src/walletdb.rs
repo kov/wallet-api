@@ -45,6 +45,7 @@ impl WalletDB {
         lazy_static! {
             static ref NAME: String = format!("wallet-fake-test-{}", uuid::Uuid::new_v4());
         }
+        println!("DB NAME: {}", (*NAME).as_str());
         WALLET_CLIENT
             .lock()
             .unwrap()
